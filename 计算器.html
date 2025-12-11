@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贷款利率计算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>贷款利率计算器</h1>
+        <label for="loanAmount">贷款总金额（元）：</label>
+        <input type="number" id="loanAmount" placeholder="请输入贷款总金额">
+
+        <label for="loanMonths">贷款总月数：</label>
+        <input type="number" id="loanMonths" placeholder="请输入贷款总月数">
+
+        <label for="annualRate">年利率（%）：</label>
+        <input type="number" id="annualRate" placeholder="请输入年利率">
+
+        <button onclick="calculateLoan()">计算</button>
+
+        <div class="result" id="result">
+            <h2>计算结果：</h2>
+            <p id="monthlyPayment"></p>
+            <p id="totalPrincipalInterest"></p>
+            <table id="detailsTable">
+                <thead>
+                    <tr>
+                        <th>期数</th>
+                        <th>还款金额（元）</th>
+                        <th>本金（元）</th>
+                        <th>利息（元）</th>
+                        <th>剩余本金（元）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 每期明细将动态插入到这里 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function calculateLoan() {
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            const loanMonths = parseInt(document.getElementById('loanMonths').value);
+            const annualRate = parseFloat(document.getElementById('annualRate').value);
+
+            if (isNaN(loanAmount) || isNaN(loanMonths) || isNaN(annualRate)) {
+                alert("请输入有效的数值！");
+                return;
+            }
+
+            const monthlyRate = annualRate / 100 / 12;
+            const monthlyPayment = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, loanMonths)) / (Math.pow(1 + monthlyRate, loanMonths) - 1);
+
+            document.getElementById('monthlyPayment').innerText = `每期还款金额：${monthlyPayment.toFixed(2)} 元`;
+
+            let remainingLoan = loanAmount;
+            let totalInterest = 0;
+            const detailsTableBody = document.querySelector("#detailsTable tbody");
+            detailsTableBody.innerHTML = ""; // 清空之前的明细
+
+            for (let i = 1; i <= loanMonths; i++) {
+                const interest = remainingLoan * monthlyRate;
+                const principal = monthlyPayment - interest;
+                remainingLoan -= principal;
+                totalInterest += interest;
+
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${i}</td>
+                    <td>${monthlyPayment.toFixed(2)}</td>
+                    <td>${principal.toFixed(2)}</td>
+                    <td>${interest.toFixed(2)}</td>
+                    <td>${remainingLoan.toFixed(2)}</td>
+                `;
+                detailsTableBody.appendChild(row);
+            }
+
+            document.getElementById('totalPrincipalInterest').innerText = `总本金：${loanAmount.toFixed(2)} 元，总利息：${totalInterest.toFixed(2)} 元`;
+        }
+    </script>
+</body>
+</html>
