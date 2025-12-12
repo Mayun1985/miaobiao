@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线答题小程序</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 20px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #07C160;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+        
+        .scan-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            border: 1px dashed #ddd;
+        }
+        
+        .qr-code span {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #07C160;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
+        
+        .btn:hover {
+            background-color: #06AE56;
+        }
+        
+        .quiz-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+        
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .question {
+            font-size: 18px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .options {
+            margin-bottom: 20px;
+        }
+        
+        .option {
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .option.selected {
+            background-color: #e6f7ff;
+            border-color: #07C160;
+        }
+        
+        .result-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+        
+        .score {
+            font-size: 48px;
+            color: #07C160;
+            margin: 20px 0;
+        }
+        
+        .result-details {
+            text-align: left;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: #07C160;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            margin-top: 30px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>在线答题小程序</h1>
+            <p>扫码参与答题，测试你的知识水平</p>
+        </div>
+        
+        <div class="scan-section" id="scanSection">
+            <h2>请使用微信扫描二维码</h2>
+            <div class="qr-code">
+                <span>模拟二维码区域</span>
+            </div>
+            <p>或点击下方按钮模拟扫码</p>
+            <button class="btn" id="scanBtn">模拟扫码</button>
+        </div>
+        
+        <div class="quiz-section" id="quizSection">
+            <div class="quiz-header">
+                <div class="question-count">题目 <span id="currentQuestion">1</span>/<span id="totalQuestions">5</span></div>
+                <div class="timer">用时: <span id="timer">00:00</span></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            
+            <div class="question" id="questionText">题目加载中...</div>
+            
+            <div class="options" id="optionsContainer">
+                <!-- 选项将通过JS动态生成 -->
+            </div>
+            
+            <button class="btn" id="nextBtn" style="display: none;">下一题</button>
+            <button class="btn" id="submitBtn">提交答案</button>
+        </div>
+        
+        <div class="result-section" id="resultSection">
+            <h2>答题完成!</h2>
+            <div class="score" id="score">0</div>
+            <p>正确率: <span id="correctRate">0%</span></p>
+            <p>用时: <span id="totalTime">00:00</span></p>
+            
+            <div class="result-details">
+                <h3>答题详情:</h3>
+                <div id="resultDetails">
+                    <!-- 答题详情将通过JS动态生成 -->
+                </div>
+            </div>
+            
+            <button class="btn" id="restartBtn">重新答题</button>
+        </div>
+        
+        <div class="footer">
+            <p>© 2023 在线答题小程序 | 模拟演示版本</p>
+        </div>
+    </div>
+
+    <script>
+        // 模拟题库数据
+        const quizData = [
+            {
+                question: "HTML是什么的缩写？",
+                options: ["超文本标记语言", "高性能文本", "超链接文本管理", "高级文本模型"],
+                correct: 0
+            },
+            {
+                question: "CSS的主要作用是什么？",
+                options: ["网页结构", "网页样式", "网页交互", "网页数据"],
+                correct: 1
+            },
+            {
+                question: "JavaScript是一种什么类型的语言？",
+                options: ["标记语言", "样式语言", "编程语言", "数据库语言"],
+                correct: 2
+            },
+            {
+                question: "以下哪个不是JavaScript的数据类型？",
+                options: ["String", "Boolean", "Number", "Float"],
+                correct: 3
+            },
+            {
+                question: "HTTP状态码200表示什么？",
+                options: ["请求失败", "请求成功", "服务器错误", "页面未找到"],
+                correct: 1
+            }
+        ];
+
+        // DOM元素
+        const scanSection = document.getElementById('scanSection');
+        const quizSection = document.getElementById('quizSection');
+        const resultSection = document.getElementById('resultSection');
+        const scanBtn = document.getElementById('scanBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const currentQuestionEl = document.getElementById('currentQuestion');
+        const totalQuestionsEl = document.getElementById('totalQuestions');
+        const timerEl = document.getElementById('timer');
+        const progressBar = document.getElementById('progressBar');
+        const scoreEl = document.getElementById('score');
+        const correctRateEl = document.getElementById('correctRate');
+        const totalTimeEl = document.getElementById('totalTime');
+        const resultDetails = document.getElementById('resultDetails');
+
+        // 答题状态
+        let currentQuestionIndex = 0;
+        let selectedOption = null;
+        let userAnswers = [];
+        let startTime = null;
+        let timerInterval = null;
+        let elapsedTime = 0;
+
+        // 初始化
+        function init() {
+            scanBtn.addEventListener('click', startQuiz);
+            nextBtn.addEventListener('click', nextQuestion);
+            submitBtn.addEventListener('click', submitAnswer);
+            restartBtn.addEventListener('click', restartQuiz);
+            
+            totalQuestionsEl.textContent = quizData.length;
+        }
+
+        // 开始答题
+        function startQuiz() {
+            scanSection.style.display = 'none';
+            quizSection.style.display = 'block';
+            
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            startTime = new Date();
+            elapsedTime = 0;
+            
+            // 启动计时器
+            startTimer();
+            
+            // 显示第一题
+            showQuestion();
+        }
+
+        // 显示题目
+        function showQuestion() {
+            const question = quizData[currentQuestionIndex];
+            questionText.textContent = question.question;
+            
+            // 更新进度
+            currentQuestionEl.textContent = currentQuestionIndex + 1;
+            progressBar.style.width = `${(currentQuestionIndex / quizData.length) * 100}%`;
+            
+            // 清空选项容器
+            optionsContainer.innerHTML = '';
+            
+            // 创建选项
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                
+                optionElement.addEventListener('click', () => {
+                    // 移除之前的选择
+                    document.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 设置当前选择
+                    optionElement.classList.add('selected');
+                    selectedOption = index;
+                    
+                    // 显示提交按钮
+                    submitBtn.style.display = 'inline-block';
+                });
+                
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            // 重置选择状态
+            selectedOption = null;
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+        }
+
+        // 提交答案
+        function submitAnswer() {
+            if (selectedOption === null) {
+                alert('请选择一个答案');
+                return;
+            }
+            
+            // 记录用户答案
+            userAnswers[currentQuestionIndex] = selectedOption;
+            
+            // 显示下一题按钮
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'inline-block';
+            
+            // 显示正确答案
+            const correctIndex = quizData[currentQuestionIndex].correct;
+            document.querySelectorAll('.option').forEach((option, index) => {
+                if (index === correctIndex) {
+                    option.style.backgroundColor = '#e6f7e9';
+                    option.style.borderColor = '#07C160';
+                } else if (index === selectedOption && selectedOption !== correctIndex) {
+                    option.style.backgroundColor = '#ffe6e6';
+                    option.style.borderColor = '#ff4d4f';
+                }
+            });
+        }
+
+        // 下一题
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < quizData.length) {
+                showQuestion();
+            } else {
+                // 所有题目已回答，显示结果
+                showResult();
+            }
+        }
+
+        // 显示结果
+        function showResult() {
+            // 停止计时器
+            clearInterval(timerInterval);
+            
+            // 计算分数
+            const correctAnswers = userAnswers.filter((answer, index) => 
+                answer === quizData[index].correct
+            ).length;
+            
+            const score = Math.round((correctAnswers / quizData.length) * 100);
+            const correctRate = `${correctAnswers}/${quizData.length}`;
+            
+            // 显示结果
+            scoreEl.textContent = score;
+            correctRateEl.textContent = `${correctRate} (${score}%)`;
+            totalTimeEl.textContent = formatTime(elapsedTime);
+            
+            // 显示答题详情
+            resultDetails.innerHTML = '';
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.correct;
+                
+                const detailItem = document.createElement('div');
+                detailItem.style.marginBottom = '10px';
+                detailItem.style.padding = '10px';
+                detailItem.style.borderRadius = '5px';
+                detailItem.style.backgroundColor = isCorrect ? '#f6ffed' : '#fff2f0';
+                detailItem.style.border = `1px solid ${isCorrect ? '#b7eb8f' : '#ffccc7'}`;
+                
+                detailItem.innerHTML = `
+                    <p><strong>题目 ${index + 1}:</strong> ${question.question}</p>
+                    <p><strong>你的答案:</strong> ${userAnswer !== undefined ? question.options[userAnswer] : '未回答'} ${isCorrect ? '✓' : '✗'}</p>
+                    <p><strong>正确答案:</strong> ${question.options[question.correct]}</p>
+                `;
+                
+                resultDetails.appendChild(detailItem);
+            });
+            
+            // 切换显示区域
+            quizSection.style.display = 'none';
+            resultSection.style.display = 'block';
+        }
+
+        // 重新开始答题
+        function restartQuiz() {
+            resultSection.style.display = 'none';
+            scanSection.style.display = 'block';
+        }
+
+        // 计时器功能
+        function startTimer() {
+            startTime = new Date();
+            timerInterval = setInterval(() => {
+                const now = new Date();
+                elapsedTime = Math.floor((now - startTime) / 1000);
+                timerEl.textContent = formatTime(elapsedTime);
+            }, 1000);
+        }
+
+        // 格式化时间显示
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // 初始化应用
+        window.onload = init;
+    </script>
+</body>
+</html>
