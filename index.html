@@ -3,470 +3,667 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>在线答题小程序</title>
+    <title>网站导览 | 页面导航中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
         }
         
         body {
-            background-color: #f5f5f5;
-            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark-color);
             line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 40px;
         }
         
         .container {
-            max-width: 100%;
-            padding: 20px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 20px;
         }
         
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #07C160;
+        header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
             color: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .header h1 {
-            font-size: 1.4rem;
-            margin-bottom: 5px;
-        }
-        
-        .scan-section {
-            background: white;
-            border-radius: 10px;
-            padding: 30px 20px;
+            padding: 2.5rem 0;
             text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border-radius: 0 0 20px 20px;
         }
         
-        .qr-code {
-            width: 200px;
-            height: 200px;
-            margin: 20px auto;
-            background: #f0f0f0;
+        .logo {
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
-            border: 1px dashed #ddd;
+            gap: 15px;
+            margin-bottom: 15px;
         }
         
-        .qr-code span {
-            color: #999;
-            font-size: 14px;
+        .logo-icon {
+            font-size: 2.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .btn {
-            display: inline-block;
-            background-color: #07C160;
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* 搜索框样式 */
+        .search-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .search-box {
+            display: flex;
+            background: white;
+            border-radius: 50px;
+            padding: 5px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .search-box:focus-within {
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 18px 25px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            outline: none;
+        }
+        
+        .search-btn {
+            background: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 5px;
-            font-size: 16px;
+            width: 60px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 15px;
+            font-size: 1.2rem;
+            transition: var(--transition);
         }
         
-        .btn:hover {
-            background-color: #06AE56;
+        .search-btn:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
         }
         
-        .quiz-section {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            display: none;
-        }
-        
-        .quiz-header {
+        /* 分类导航 */
+        .category-tabs {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: #666;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 2rem 0 2.5rem;
+            padding: 0 10px;
         }
         
-        .question {
-            font-size: 18px;
+        .category-tab {
+            background: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            font-size: 1rem;
+        }
+        
+        .category-tab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-tab.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        /* 链接卡片区域 */
+        .links-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            padding: 0 20px;
+        }
+        
+        .link-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .link-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header {
+            padding: 25px 25px 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .card-icon {
+            width: 55px;
+            height: 55px;
+            background: var(--primary-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .card-category {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            font-weight: 600;
+        }
+        
+        .card-content {
+            padding: 0 25px 20px;
+            flex-grow: 1;
+        }
+        
+        .card-description {
+            color: var(--gray-color);
             margin-bottom: 20px;
             line-height: 1.5;
         }
         
-        .options {
-            margin-bottom: 20px;
-        }
-        
-        .option {
-            padding: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .option:hover {
-            background-color: #f9f9f9;
-        }
-        
-        .option.selected {
-            background-color: #e6f7ff;
-            border-color: #07C160;
-        }
-        
-        .result-section {
-            background: white;
-            border-radius: 10px;
-            padding: 30px 20px;
+        .card-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: var(--transition);
+            width: 100%;
             text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            display: none;
         }
         
-        .score {
-            font-size: 48px;
-            color: #07C160;
-            margin: 20px 0;
+        .card-link:hover {
+            background: var(--secondary-color);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
         }
         
-        .result-details {
-            text-align: left;
-            margin-top: 20px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-radius: 5px;
+        .card-footer {
+            padding: 20px 25px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--gray-color);
+            display: flex;
+            justify-content: space-between;
         }
         
-        .progress-bar {
-            height: 6px;
-            background: #e0e0e0;
-            border-radius: 3px;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-        
-        .progress {
-            height: 100%;
-            background: #07C160;
-            width: 0%;
-            transition: width 0.3s;
-        }
-        
-        .footer {
+        /* 页脚 */
+        footer {
             text-align: center;
-            color: #999;
-            font-size: 12px;
-            margin-top: 30px;
-            padding: 10px;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: var(--gray-color);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--gray-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+            color: var(--gray-color);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .links-container {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .category-tabs {
+                gap: 8px;
+            }
+            
+            .category-tab {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .links-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .search-box input {
+                padding: 15px 20px;
+            }
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .link-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        /* 延迟动画 */
+        .link-card:nth-child(2) { animation-delay: 0.1s; }
+        .link-card:nth-child(3) { animation-delay: 0.2s; }
+        .link-card:nth-child(4) { animation-delay: 0.3s; }
+        .link-card:nth-child(5) { animation-delay: 0.4s; }
+        .link-card:nth-child(6) { animation-delay: 0.5s; }
+        .link-card:nth-child(7) { animation-delay: 0.6s; }
+        .link-card:nth-child(8) { animation-delay: 0.7s; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>在线答题小程序</h1>
-            <p>扫码参与答题，测试你的知识水平</p>
-        </div>
-        
-        <div class="scan-section" id="scanSection">
-            <h2>请使用微信扫描二维码</h2>
-            <div class="qr-code">
-                <span>模拟二维码区域</span>
-            </div>
-            <p>或点击下方按钮模拟扫码</p>
-            <button class="btn" id="scanBtn">模拟扫码</button>
-        </div>
-        
-        <div class="quiz-section" id="quizSection">
-            <div class="quiz-header">
-                <div class="question-count">题目 <span id="currentQuestion">1</span>/<span id="totalQuestions">5</span></div>
-                <div class="timer">用时: <span id="timer">00:00</span></div>
-            </div>
-            
-            <div class="progress-bar">
-                <div class="progress" id="progressBar"></div>
-            </div>
-            
-            <div class="question" id="questionText">题目加载中...</div>
-            
-            <div class="options" id="optionsContainer">
-                <!-- 选项将通过JS动态生成 -->
-            </div>
-            
-            <button class="btn" id="nextBtn" style="display: none;">下一题</button>
-            <button class="btn" id="submitBtn">提交答案</button>
-        </div>
-        
-        <div class="result-section" id="resultSection">
-            <h2>答题完成!</h2>
-            <div class="score" id="score">0</div>
-            <p>正确率: <span id="correctRate">0%</span></p>
-            <p>用时: <span id="totalTime">00:00</span></p>
-            
-            <div class="result-details">
-                <h3>答题详情:</h3>
-                <div id="resultDetails">
-                    <!-- 答题详情将通过JS动态生成 -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-compass"></i>
+                </div>
+                <div>
+                    <h1>网站导览中心</h1>
+                    <p class="subtitle">快速访问网站所有重要页面，找到您需要的内容</p>
                 </div>
             </div>
-            
-            <button class="btn" id="restartBtn">重新答题</button>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索页面或功能...">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
         </div>
         
-        <div class="footer">
-            <p>© 2023 在线答题小程序 | 模拟演示版本</p>
+        <div class="category-tabs" id="categoryTabs">
+            <button class="category-tab active" data-category="all">全部页面</button>
+            <button class="category-tab" data-category="main">主要页面</button>
+            <button class="category-tab" data-category="content">内容页面</button>
+            <button class="category-tab" data-category="user">用户相关</button>
+            <button class="category-tab" data-category="tools">工具与资源</button>
+            <button class="category-tab" data-category="info">信息页面</button>
+        </div>
+        
+        <div class="links-container" id="linksContainer">
+            <!-- 链接卡片将通过JavaScript动态生成 -->
         </div>
     </div>
+    
+    <footer>
+        <div class="container">
+            <p>© 2023 网站导览中心 | 设计用于提供更好的导航体验</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-home"></i> 首页</a>
+                <a href="#"><i class="fas fa-info-circle"></i> 关于我们</a>
+                <a href="#"><i class="fas fa-envelope"></i> 联系我们</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> 隐私政策</a>
+                <a href="#"><i class="fas fa-file-alt"></i> 使用条款</a>
+            </div>
+        </div>
+    </footer>
 
     <script>
-        // 模拟题库数据
-        const quizData = [
+        // 页面链接数据
+        const pageLinks = [
             {
-                question: "HTML是什么的缩写？",
-                options: ["超文本标记语言", "高性能文本", "超链接文本管理", "高级文本模型"],
-                correct: 0
+                title: "秒表",
+                description: "秒表小程序，可实现计时功能",
+                url: "https://mayun1985.github.io/miaobiao/%E7%A7%92%E8%A1%A8.html",
+                category: "main",
+                icon: "fas fa-home",
+                date: "最近更新",
+                visits: "高访问量"
             },
             {
-                question: "CSS的主要作用是什么？",
-                options: ["网页结构", "网页样式", "网页交互", "网页数据"],
-                correct: 1
+                title: "二维码登记",
+                description: "一个二维码小程序",
+                url: "https://mayun1985.github.io/miaobiao/index.html",
+                category: "info",
+                icon: "fas fa-info-circle",
+                date: "2023-10-15",
+                visits: "中等访问量"
             },
             {
-                question: "JavaScript是一种什么类型的语言？",
-                options: ["标记语言", "样式语言", "编程语言", "数据库语言"],
-                correct: 2
+                title: "产品与服务",
+                description: "浏览我们提供的所有产品和服务，了解详细功能和定价",
+                url: "products.html",
+                category: "content",
+                icon: "fas fa-box-open",
+                date: "2023-11-02",
+                visits: "高访问量"
             },
             {
-                question: "以下哪个不是JavaScript的数据类型？",
-                options: ["String", "Boolean", "Number", "Float"],
-                correct: 3
+                title: "用户登录",
+                description: "登录您的账户，访问个性化内容和功能",
+                url: "login.html",
+                category: "user",
+                icon: "fas fa-sign-in-alt",
+                date: "持续可用",
+                visits: "高访问量"
             },
             {
-                question: "HTTP状态码200表示什么？",
-                options: ["请求失败", "请求成功", "服务器错误", "页面未找到"],
-                correct: 1
+                title: "用户注册",
+                description: "创建新账户，享受更多个性化服务和功能",
+                url: "register.html",
+                category: "user",
+                icon: "fas fa-user-plus",
+                date: "持续可用",
+                visits: "中等访问量"
+            },
+            {
+                title: "帮助中心",
+                description: "查找常见问题解答、使用教程和故障排除指南",
+                url: "help.html",
+                category: "tools",
+                icon: "fas fa-question-circle",
+                date: "2023-10-28",
+                visits: "中等访问量"
+            },
+            {
+                title: "联系我们",
+                description: "通过电话、邮件或在线表单与我们取得联系",
+                url: "contact.html",
+                category: "info",
+                icon: "fas fa-envelope",
+                date: "2023-09-20",
+                visits: "低访问量"
+            },
+            {
+                title: "博客文章",
+                description: "阅读我们最新的博客文章、行业洞察和成功案例",
+                url: "blog.html",
+                category: "content",
+                icon: "fas fa-blog",
+                date: "2023-11-10",
+                visits: "高访问量"
+            },
+            {
+                title: "资源下载",
+                description: "下载白皮书、模板、工具包和其他有用资源",
+                url: "downloads.html",
+                category: "tools",
+                icon: "fas fa-download",
+                date: "2023-10-05",
+                visits: "中等访问量"
+            },
+            {
+                title: "站点地图",
+                description: "查看网站完整结构，快速找到所需页面",
+                url: "sitemap.html",
+                category: "tools",
+                icon: "fas fa-sitemap",
+                date: "2023-11-01",
+                visits: "低访问量"
+            },
+            {
+                title: "隐私政策",
+                description: "了解我们如何收集、使用和保护您的个人信息",
+                url: "privacy.html",
+                category: "info",
+                icon: "fas fa-shield-alt",
+                date: "2023-08-15",
+                visits: "低访问量"
+            },
+            {
+                title: "个人中心",
+                description: "管理您的个人资料、偏好设置和账户信息",
+                url: "profile.html",
+                category: "user",
+                icon: "fas fa-user-circle",
+                date: "持续可用",
+                visits: "高访问量"
             }
         ];
 
-        // DOM元素
-        const scanSection = document.getElementById('scanSection');
-        const quizSection = document.getElementById('quizSection');
-        const resultSection = document.getElementById('resultSection');
-        const scanBtn = document.getElementById('scanBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const submitBtn = document.getElementById('submitBtn');
-        const restartBtn = document.getElementById('restartBtn');
-        const questionText = document.getElementById('questionText');
-        const optionsContainer = document.getElementById('optionsContainer');
-        const currentQuestionEl = document.getElementById('currentQuestion');
-        const totalQuestionsEl = document.getElementById('totalQuestions');
-        const timerEl = document.getElementById('timer');
-        const progressBar = document.getElementById('progressBar');
-        const scoreEl = document.getElementById('score');
-        const correctRateEl = document.getElementById('correctRate');
-        const totalTimeEl = document.getElementById('totalTime');
-        const resultDetails = document.getElementById('resultDetails');
-
-        // 答题状态
-        let currentQuestionIndex = 0;
-        let selectedOption = null;
-        let userAnswers = [];
-        let startTime = null;
-        let timerInterval = null;
-        let elapsedTime = 0;
-
-        // 初始化
-        function init() {
-            scanBtn.addEventListener('click', startQuiz);
-            nextBtn.addEventListener('click', nextQuestion);
-            submitBtn.addEventListener('click', submitAnswer);
-            restartBtn.addEventListener('click', restartQuiz);
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const linksContainer = document.getElementById('linksContainer');
+            const categoryTabs = document.querySelectorAll('.category-tab');
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
             
-            totalQuestionsEl.textContent = quizData.length;
-        }
-
-        // 开始答题
-        function startQuiz() {
-            scanSection.style.display = 'none';
-            quizSection.style.display = 'block';
-            
-            currentQuestionIndex = 0;
-            userAnswers = [];
-            startTime = new Date();
-            elapsedTime = 0;
-            
-            // 启动计时器
-            startTimer();
-            
-            // 显示第一题
-            showQuestion();
-        }
-
-        // 显示题目
-        function showQuestion() {
-            const question = quizData[currentQuestionIndex];
-            questionText.textContent = question.question;
-            
-            // 更新进度
-            currentQuestionEl.textContent = currentQuestionIndex + 1;
-            progressBar.style.width = `${(currentQuestionIndex / quizData.length) * 100}%`;
-            
-            // 清空选项容器
-            optionsContainer.innerHTML = '';
-            
-            // 创建选项
-            question.options.forEach((option, index) => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'option';
-                optionElement.textContent = option;
-                optionElement.dataset.index = index;
+            // 渲染链接卡片
+            function renderLinks(links) {
+                linksContainer.innerHTML = '';
                 
-                optionElement.addEventListener('click', () => {
-                    // 移除之前的选择
-                    document.querySelectorAll('.option').forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
+                if (links.length === 0) {
+                    linksContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <h3>未找到匹配的页面</h3>
+                            <p>请尝试其他搜索词或选择不同分类</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                links.forEach(link => {
+                    const linkCard = document.createElement('div');
+                    linkCard.className = 'link-card';
+                    linkCard.setAttribute('data-category', link.category);
                     
-                    // 设置当前选择
-                    optionElement.classList.add('selected');
-                    selectedOption = index;
+                    // 根据分类设置不同的图标颜色
+                    let iconColor = '';
+                    switch(link.category) {
+                        case 'main': iconColor = '#4361ee'; break;
+                        case 'content': iconColor = '#4cc9f0'; break;
+                        case 'user': iconColor = '#3a0ca3'; break;
+                        case 'tools': iconColor = '#f72585'; break;
+                        case 'info': iconColor = '#4caf50'; break;
+                        default: iconColor = '#4361ee';
+                    }
                     
-                    // 显示提交按钮
-                    submitBtn.style.display = 'inline-block';
+                    linkCard.innerHTML = `
+                        <div class="card-header">
+                            <div class="card-icon" style="background: ${iconColor};">
+                                <i class="${link.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="card-title">${link.title}</h3>
+                                <span class="card-category">${getCategoryName(link.category)}</span>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-description">${link.description}</p>
+                            <a href="${link.url}" class="card-link" target="_blank">访问此页面 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                        <div class="card-footer">
+                            <span>${link.date}</span>
+                            <span>${link.visits}</span>
+                        </div>
+                    `;
+                    
+                    linksContainer.appendChild(linkCard);
                 });
-                
-                optionsContainer.appendChild(optionElement);
-            });
-            
-            // 重置选择状态
-            selectedOption = null;
-            submitBtn.style.display = 'none';
-            nextBtn.style.display = 'none';
-        }
-
-        // 提交答案
-        function submitAnswer() {
-            if (selectedOption === null) {
-                alert('请选择一个答案');
-                return;
             }
             
-            // 记录用户答案
-            userAnswers[currentQuestionIndex] = selectedOption;
+            // 获取分类名称
+            function getCategoryName(categoryKey) {
+                const categoryNames = {
+                    'all': '全部页面',
+                    'main': '主要页面',
+                    'content': '内容页面',
+                    'user': '用户相关',
+                    'tools': '工具与资源',
+                    'info': '信息页面'
+                };
+                return categoryNames[categoryKey] || categoryKey;
+            }
             
-            // 显示下一题按钮
-            submitBtn.style.display = 'none';
-            nextBtn.style.display = 'inline-block';
+            // 初始渲染
+            renderLinks(pageLinks);
             
-            // 显示正确答案
-            const correctIndex = quizData[currentQuestionIndex].correct;
-            document.querySelectorAll('.option').forEach((option, index) => {
-                if (index === correctIndex) {
-                    option.style.backgroundColor = '#e6f7e9';
-                    option.style.borderColor = '#07C160';
-                } else if (index === selectedOption && selectedOption !== correctIndex) {
-                    option.style.backgroundColor = '#ffe6e6';
-                    option.style.borderColor = '#ff4d4f';
+            // 分类筛选功能
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 更新活动标签
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    filterLinks(category, searchInput.value);
+                });
+            });
+            
+            // 搜索功能
+            function filterLinks(category, searchTerm = '') {
+                let filteredLinks = pageLinks;
+                
+                // 按分类筛选
+                if (category !== 'all') {
+                    filteredLinks = filteredLinks.filter(link => link.category === category);
+                }
+                
+                // 按搜索词筛选
+                if (searchTerm.trim() !== '') {
+                    const term = searchTerm.toLowerCase();
+                    filteredLinks = filteredLinks.filter(link => 
+                        link.title.toLowerCase().includes(term) || 
+                        link.description.toLowerCase().includes(term) ||
+                        getCategoryName(link.category).toLowerCase().includes(term)
+                    );
+                }
+                
+                renderLinks(filteredLinks);
+            }
+            
+            // 搜索按钮事件
+            searchBtn.addEventListener('click', function() {
+                const activeCategory = document.querySelector('.category-tab.active').getAttribute('data-category');
+                filterLinks(activeCategory, searchInput.value);
+            });
+            
+            // 输入框回车事件
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    const activeCategory = document.querySelector('.category-tab.active').getAttribute('data-category');
+                    filterLinks(activeCategory, searchInput.value);
                 }
             });
-        }
-
-        // 下一题
-        function nextQuestion() {
-            currentQuestionIndex++;
             
-            if (currentQuestionIndex < quizData.length) {
-                showQuestion();
-            } else {
-                // 所有题目已回答，显示结果
-                showResult();
-            }
-        }
-
-        // 显示结果
-        function showResult() {
-            // 停止计时器
-            clearInterval(timerInterval);
-            
-            // 计算分数
-            const correctAnswers = userAnswers.filter((answer, index) => 
-                answer === quizData[index].correct
-            ).length;
-            
-            const score = Math.round((correctAnswers / quizData.length) * 100);
-            const correctRate = `${correctAnswers}/${quizData.length}`;
-            
-            // 显示结果
-            scoreEl.textContent = score;
-            correctRateEl.textContent = `${correctRate} (${score}%)`;
-            totalTimeEl.textContent = formatTime(elapsedTime);
-            
-            // 显示答题详情
-            resultDetails.innerHTML = '';
-            quizData.forEach((question, index) => {
-                const userAnswer = userAnswers[index];
-                const isCorrect = userAnswer === question.correct;
-                
-                const detailItem = document.createElement('div');
-                detailItem.style.marginBottom = '10px';
-                detailItem.style.padding = '10px';
-                detailItem.style.borderRadius = '5px';
-                detailItem.style.backgroundColor = isCorrect ? '#f6ffed' : '#fff2f0';
-                detailItem.style.border = `1px solid ${isCorrect ? '#b7eb8f' : '#ffccc7'}`;
-                
-                detailItem.innerHTML = `
-                    <p><strong>题目 ${index + 1}:</strong> ${question.question}</p>
-                    <p><strong>你的答案:</strong> ${userAnswer !== undefined ? question.options[userAnswer] : '未回答'} ${isCorrect ? '✓' : '✗'}</p>
-                    <p><strong>正确答案:</strong> ${question.options[question.correct]}</p>
-                `;
-                
-                resultDetails.appendChild(detailItem);
+            // 输入框实时搜索
+            searchInput.addEventListener('input', function() {
+                if (this.value.trim() === '') {
+                    const activeCategory = document.querySelector('.category-tab.active').getAttribute('data-category');
+                    filterLinks(activeCategory, '');
+                }
             });
             
-            // 切换显示区域
-            quizSection.style.display = 'none';
-            resultSection.style.display = 'block';
-        }
-
-        // 重新开始答题
-        function restartQuiz() {
-            resultSection.style.display = 'none';
-            scanSection.style.display = 'block';
-        }
-
-        // 计时器功能
-        function startTimer() {
-            startTime = new Date();
-            timerInterval = setInterval(() => {
-                const now = new Date();
-                elapsedTime = Math.floor((now - startTime) / 1000);
-                timerEl.textContent = formatTime(elapsedTime);
-            }, 1000);
-        }
-
-        // 格式化时间显示
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        // 初始化应用
-        window.onload = init;
+            // 为所有链接卡片添加点击动画
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.link-card')) {
+                    const card = e.target.closest('.link-card');
+                    card.style.transform = 'translateY(-10px) scale(1.02)';
+                    setTimeout(() => {
+                        card.style.transform = 'translateY(-10px)';
+                    }, 150);
+                }
+            });
+        });
     </script>
 </body>
 </html>
